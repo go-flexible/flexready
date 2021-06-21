@@ -87,7 +87,7 @@ func CheckHandler(checks Checks) http.HandlerFunc {
 		res := make(map[string]health)
 		for name, check := range checks {
 			var message string
-			err := check.Check()
+			err := check()
 			if err != nil {
 				ready = false
 				message = err.Error()
