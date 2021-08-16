@@ -18,6 +18,8 @@ const (
 	DefaultPath = "/ready"
 )
 
+var logger = log.New(os.Stderr, "flexready: ", 0)
+
 // Config represents the configuration for the metrics server.
 type Config struct {
 	Path   string
@@ -66,13 +68,13 @@ func (s *Server) Run(_ context.Context) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("serving readiness checks server over http on http://%s%s", s.Addr, s.Path)
+	logger.Printf("serving readiness checks server over http on http://%s%s", s.Addr, s.Path)
 	return s.Server.Serve(lis)
 }
 
 // Halt will attempt to gracefully shut down the server.
 func (s *Server) Halt(ctx context.Context) error {
-	log.Printf("stopping readiness checks server over http on http://%s...", s.Addr)
+	logger.Printf("stopping readiness checks server over http on http://%s...", s.Addr)
 	return s.Server.Shutdown(ctx)
 }
 
