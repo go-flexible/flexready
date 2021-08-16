@@ -57,7 +57,6 @@ func New(config *Config, checks Checks) *Server {
 // Server defines a readiness server.
 type Server struct {
 	*http.Server
-
 	Path   string
 	Checks Checks
 }
@@ -68,6 +67,7 @@ func (s *Server) Run(_ context.Context) error {
 	if err != nil {
 		return err
 	}
+
 	logger.Printf("serving readiness checks server over http on http://%s%s", s.Addr, s.Path)
 	return s.Server.Serve(lis)
 }
