@@ -1,5 +1,7 @@
 # flexready
 
+<a href="https://pkg.go.dev/github.com/go-flexible/flexready"><img src="https://pkg.go.dev/badge/github.com/go-flexible/flexready.svg" alt="Go Reference"></a>
+
 A [flex](https://github.com/go-flexible/flex) compatible readiness server.
 
 ```go
