@@ -17,7 +17,7 @@ const (
 	// DefaultReadinessPath is the path where we readiness by default.
 	DefaultReadinessPath = "/ready"
 
-	// DefaultReadinessPath is the path where we expose liveness by default.
+	// DefaultLivenessPath is the path where we expose liveness by default.
 	DefaultLivenessPath = "/live"
 
 	// DefaultReadTimeout is the default read timeout for the http server.
@@ -35,8 +35,8 @@ const (
 
 var defaultLogger = log.New(os.Stderr, "flexready: ", 0)
 
-// // Option is a type of func that allows you change defaults of the *Server
-// // returned by New.
+// Option is a type of func that allows you change defaults of the *Server
+// returned by New.
 type Option func(s *Server)
 
 // WithLogger allows you to set a logger for the server.
