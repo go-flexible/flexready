@@ -5,6 +5,14 @@
 
 A [flex](https://github.com/go-flexible/flex) compatible readiness server.
 
+## Install
+
+```shell
+go get github.com/go-flexible/flexready
+```
+
+## Example
+
 ```go
 // Configure the server, or pass nil for package defaults.
 config := &flexready.Config{
