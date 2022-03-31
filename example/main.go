@@ -3,22 +3,20 @@ package main
 import (
 	"context"
 	"errors"
-	"net/http"
+	"io"
+	"log"
 
 	"github.com/go-flexible/flexready"
 )
 
 func main() {
-	// Configure the server, or pass nil for package defaults.
-	config := &flexready.Config{
-		Server: &http.Server{Addr: ":9999"},
-	}
+	logger := log.New(io.Discard, "", 0)
 
 	// Prepare your readyserver.
-	readysrv := flexready.New(config, flexready.Checks{
+	readysrv := flexready.New(flexready.Checks{
 		"redis":       func() error { return redisCheck(nil) },
 		"cockroachdb": func() error { return cockroachCheck(nil) },
-	})
+	}, flexready.WithAddress(":9999"), flexready.WithLogger(logger))
 
 	// Run it, or better yet, let `flex` run it for you!
 	_ = readysrv.Run(context.Background())
