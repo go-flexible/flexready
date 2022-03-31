@@ -67,6 +67,15 @@ func WithAddress(address string) Option {
 	}
 }
 
+// WithHTTPServer allows you to set the http server for the server.
+func WithHTTPServer(s *http.Server) Option {
+	return func(ss *Server) {
+		// prefer the address of the provided server.
+		ss.address = s.Addr
+		ss.Server = s
+	}
+}
+
 // New creates a new ready server.
 func New(checks Checks, options ...Option) *Server {
 	var (
@@ -91,6 +100,12 @@ func New(checks Checks, options ...Option) *Server {
 		livenessPath:  livenessPath,
 		readinessPath: readinessPath,
 		checks:        checks,
+		Server: &http.Server{
+			ReadTimeout:       DefaultReadTimeout,
+			ReadHeaderTimeout: DefaultReadHeaderTimeout,
+			WriteTimeout:      DefaultWriteTimeout,
+			IdleTimeout:       DefaultIdleTimeout,
+		},
 	}
 
 	for _, option := range options {
@@ -101,14 +116,8 @@ func New(checks Checks, options ...Option) *Server {
 	mux.Handle(server.livenessPath, LivenessHandler())
 	mux.Handle(server.readinessPath, ReadinessHandler(checks))
 
-	server.Server = &http.Server{
-		Addr:              server.address,
-		Handler:           mux,
-		ReadTimeout:       DefaultReadTimeout,
-		ReadHeaderTimeout: DefaultReadHeaderTimeout,
-		WriteTimeout:      DefaultWriteTimeout,
-		IdleTimeout:       DefaultIdleTimeout,
-	}
+	server.Server.Addr = server.address
+	server.Server.Handler = mux
 
 	return server
 }

@@ -61,10 +61,23 @@ func TestNew(t *testing.T) {
 			t.Fatal(err)
 		}
 
+		equal(t, srv.Addr, ":0")
 		equal(t, res["ok"].OK, true)
 		equal(t, res["ok"].Messages, "")
 		equal(t, res["not_ok"].OK, false)
 		equal(t, res["not_ok"].Messages, "oops")
+	})
+	t.Run("user defined server is used", func(t *testing.T) {
+		httpServer := &http.Server{
+			Addr: ":1234",
+		}
+
+		srv := flexready.New(flexready.Checks{
+			"ok":     func() error { return nil },
+			"not_ok": func() error { return errors.New("oops") },
+		}, flexready.WithHTTPServer(httpServer))
+
+		equal(t, srv.Addr, ":1234")
 	})
 }
 
