@@ -40,7 +40,7 @@ var defaultLogger = log.New(os.Stderr, "flexready: ", 0)
 type Option func(s *Server)
 
 // WithLogger allows you to set a logger for the server.
-func WithLogger(l *log.Logger) Option {
+func WithLogger(l Logger) Option {
 	return func(s *Server) {
 		s.logger = l
 	}
@@ -130,20 +130,21 @@ type Server struct {
 
 // Run will start the ready server.
 func (s *Server) Run(_ context.Context) error {
-	lis, err := net.Listen("tcp", s.Server.Addr)
+	listener, err := net.Listen("tcp", s.Addr)
 	if err != nil {
 		return err
 	}
 
-	s.logger.Printf("serving readiness checks over http on http://%s%s", s.Addr, s.readinessPath)
-	s.logger.Printf("serving liveness checks over http on http://%s%s", s.Addr, s.livenessPath)
-	return s.Server.Serve(lis)
+	if address, ok := listener.Addr().(*net.TCPAddr); ok {
+		s.logger.Printf("serving readiness checks over http on http://%s%s", address, s.readinessPath)
+		s.logger.Printf("serving liveness checks over http on http://%s%s", address, s.livenessPath)
+	}
+	return s.Serve(listener)
 }
 
 // Halt will attempt to gracefully shut down the server.
 func (s *Server) Halt(ctx context.Context) error {
-	s.logger.Printf("stopping readiness checks server over http on http://%s%s", s.Addr, s.readinessPath)
-	s.logger.Printf("stopping liveness checks server over http on http://%s%s", s.Addr, s.livenessPath)
+	s.logger.Printf("shutting down readiness server...")
 	return s.Server.Shutdown(ctx)
 }
 
