@@ -23,11 +23,11 @@ func main() {
 }
 
 // redis is broken.
-func redisCheck(redisClient interface{}) error {
+func redisCheck(redisClient any) error {
 	return errors.New("connection to redis is broken")
 }
 
 // all is well.
-func cockroachCheck(dbClient interface{}) error {
+func cockroachCheck(dbClient any) error {
 	return nil
 }
